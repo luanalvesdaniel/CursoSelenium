@@ -21,14 +21,14 @@ public class TesteGoogle {
 		//inicia maximizado
 //		driver.manage().window().maximize();
 		
-		//pega o título da página
+		//inicializa a página e pega o título dela
 		driver.get("http://www.google.com");
 //		System.out.println(driver.getTitle());
 
 		//compara o título da página onde "Google" é o esperado e o driver.getTitle() é o título da página real 
 		Assert.assertEquals("Google", driver.getTitle());
 		
-		//sempre fechar o nagevador e o serviço do gecko
+		//sempre fechar o navegador e o serviço do gecko
 		driver.quit();
 	}
 
