@@ -1,6 +1,6 @@
-import static org.junit.Assert.assertEquals;
-
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -10,17 +10,28 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class TesteAlert {
 
-	@Test	
-	public void deveInteragirComAlertSimples() {
-		
+	private WebDriver driver;
+	
+	@Before
+	public void inicializa() {
 		//inicializa o driver geckodriver que está na pasta do path do windows
-		WebDriver driver = new FirefoxDriver();
+		driver = new FirefoxDriver();
 		
 		//ajuste da janela do navegador
 		driver.manage().window().setSize(new Dimension(800, 600));
 		
 		//inicializa a página e pega o título dela
 		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
+	}
+	
+	@After
+	public void finaliza() {
+		driver.quit();
+	
+	}
+	
+	@Test	
+	public void deveInteragirComAlertSimples() {
 	
 		//encontrar o botão que executa um alert simples
 		driver.findElement(By.id("alert")).click();
@@ -41,22 +52,11 @@ public class TesteAlert {
 		//pegar o texto do alert e inserir o mesmo texto no campo Nome
 		driver.findElement(By.id("elementosForm:nome")).sendKeys(texto);
 		
-		
-		driver.quit();
-		
 	}
+	
 	@Test	
 	public void deveInteragirComAlertConfirm() {
 		
-		//inicializa o driver geckodriver que está na pasta do path do windows
-		WebDriver driver = new FirefoxDriver();
-		
-		//ajuste da janela do navegador
-		driver.manage().window().setSize(new Dimension(800, 600));
-		
-		//inicializa a página e pega o título dela
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-	
 		//realizar o clique no botão confirm
 		driver.findElement(By.id("confirm")).click();
 		
@@ -88,20 +88,11 @@ public class TesteAlert {
 		Assert.assertEquals("Negado", confirmado);
 		alerta.accept();
 		
-		driver.quit();
 	}
+	
 	@Test	
 	public void deveInteragirComAlertPrompt() {
-		
-		//inicializa o driver geckodriver que está na pasta do path do windows
-		WebDriver driver = new FirefoxDriver();
-		
-		//ajuste da janela do navegador
-		driver.manage().window().setSize(new Dimension(800, 600));
-		
-		//inicializa a página e pega o título dela
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-
+	
 		//clicar no alert
 		driver.findElement(By.id("prompt")).click();
 	
@@ -126,14 +117,5 @@ public class TesteAlert {
 		
 		alertp.accept();
 		
-		driver.quit();
-		
 	}
 }
-
-
-
-
-
-
-

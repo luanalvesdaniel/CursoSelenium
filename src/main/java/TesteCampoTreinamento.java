@@ -1,9 +1,8 @@
-import static org.junit.Assert.assertTrue;
-
-
 import java.util.List;
+
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -14,103 +13,68 @@ import org.openqa.selenium.support.ui.Select;
 
 public class TesteCampoTreinamento {
 
-	@Test
-	public void deveInteragirComTextField() {
-		
+	private WebDriver driver;
+	
+	@Before
+	public void inicializa() {
 		//inicializa o driver geckodriver que está na pasta do path do windows
-		WebDriver driver = new FirefoxDriver();
+		driver = new FirefoxDriver();
 		
 		//ajuste da janela do navegador
 		driver.manage().window().setSize(new Dimension(800, 600));
 		
 		//inicializa a página e pega o título dela
 		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
+	}
+	
+	@After
+	public void finaliza() {
+		driver.quit();
+	}
+	
+	@Test
+	public void deveInteragirComTextField() {
 		
 		//encontrar elemento do tipo textfield pelo id e inserir o texto (sendkeys)
 		driver.findElement(By.id("elementosForm:nome")).sendKeys("teste de escrita");
 		//no mesmo elemento acima, validar o que foi escrito
 		Assert.assertEquals("teste de escrita", driver.findElement(By.id("elementosForm:nome")).getAttribute("value"));
 		
-		
-		driver.quit();
-		
 	}
 	
 	@Test
 	public void deveInteragirComTextArea() {
-		
-		//inicializa o driver geckodriver que está na pasta do path do windows
-		WebDriver driver = new FirefoxDriver();
-		
-		//ajuste da janela do navegador
-		driver.manage().window().setSize(new Dimension(800, 600));
-		
-		//inicializa a página e pega o título dela
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
 		
 		//busca elemento pelo id e insere teste, em seguida valida o texto
 		//para pular linha basta usar o \n
 		driver.findElement(By.id("elementosForm:sugestoes")).sendKeys("teste");
 		Assert.assertEquals("teste", driver.findElement(By.id("elementosForm:sugestoes")).getAttribute("value"));
 	
-		
-		driver.quit();
 	}
 	
 	@Test
 	public void deveInteragirComRadioButton() {
-		
-		//inicializa o driver geckodriver que está na pasta do path do windows
-		WebDriver driver = new FirefoxDriver();
-		
-		//ajuste da janela do navegador
-		driver.manage().window().setSize(new Dimension(800, 600));
-		
-		//inicializa a página e pega o título dela
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
 		
 		//encontrar elemento por id e dar um clique no radiobutton
 		driver.findElement(By.id("elementosForm:sexo:0")).click();
 		//validar se o elemento está clicado
 		Assert.assertTrue(driver.findElement(By.id("elementosForm:sexo:0")).isSelected());
 		
-		driver.quit();
-
 	}
 	
 	@Test
 	public void deveInteragirComCheckBox() {
-		
-		//inicializa o driver geckodriver que está na pasta do path do windows
-		WebDriver driver = new FirefoxDriver();
-		
-		//ajuste da janela do navegador
-		driver.manage().window().setSize(new Dimension(800, 600));
-		
-		//inicializa a página e pega o título dela
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
 		
 		//encontrar elemento por id e dar um check
 		driver.findElement(By.id("elementosForm:comidaFavorita:0")).click();
 		//validar se o elemento está com check
 		Assert.assertTrue(driver.findElement(By.id("elementosForm:comidaFavorita:0")).isSelected());
 		
-		driver.quit();
-
 	}
 	
 	@Test
 	public void deveInteragirComCombo() {
 		
-		//inicializa o driver geckodriver que está na pasta do path do windows
-		WebDriver driver = new FirefoxDriver();
-		
-		//ajuste da janela do navegador
-		driver.manage().window().setSize(new Dimension(800, 600));
-		
-		//inicializa a página e pega o título dela
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-	
 		//Instanciando como WebElement pois é como o selenium retorna em findElement
 		WebElement element = driver.findElement(By.id("elementosForm:escolaridade"));
 		//dando select passando o element criado
@@ -126,22 +90,11 @@ public class TesteCampoTreinamento {
 		//Para validar devera primeiro pegar o primeiro valor selecionado e pegar o texto
 		Assert.assertEquals("1o grau completo", combo.getFirstSelectedOption().getText());
 		
-		driver.quit();
-		
 	}
 	
 	@Test
 	public void deveVerificarValoresCombo() {
 		
-		//inicializa o driver geckodriver que está na pasta do path do windows
-		WebDriver driver = new FirefoxDriver();
-		
-		//ajuste da janela do navegador
-		driver.manage().window().setSize(new Dimension(800, 600));
-		
-		//inicializa a página e pega o título dela
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-	
 		//Instanciando como WebElement pois é como o selenium retorna em findElement
 		WebElement element = driver.findElement(By.id("elementosForm:escolaridade"));
 		//dando select passando o element criado
@@ -163,21 +116,11 @@ public class TesteCampoTreinamento {
 		}
 		Assert.assertTrue(encontrou);
 		
-		driver.quit();
 	}
 	
 	@Test
 	public void deveVerificarValoresComboMultiplo() {
 		
-		//inicializa o driver geckodriver que está na pasta do path do windows
-		WebDriver driver = new FirefoxDriver();
-		
-		//ajuste da janela do navegador
-		driver.manage().window().setSize(new Dimension(800, 600));
-		
-		//inicializa a página e pega o título dela
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-	
 		//Instanciando como WebElement pois é como o selenium retorna em findElement
 		WebElement element = driver.findElement(By.id("elementosForm:esportes"));
 		//dando select passando o element criado
@@ -199,22 +142,11 @@ public class TesteCampoTreinamento {
 		allSelectedOptions = combo.getAllSelectedOptions();
 		Assert.assertEquals(2, allSelectedOptions.size());
 		
-		driver.quit();
-		
 	}
 	
 	@Test
 	public void deveInteragirComBotoes() {
 		
-		//inicializa o driver geckodriver que está na pasta do path do windows
-		WebDriver driver = new FirefoxDriver();
-		
-		//ajuste da janela do navegador
-		driver.manage().window().setSize(new Dimension(800, 600));
-		
-		//inicializa a página e pega o título dela
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-
 		//clicar no botao pelo id v1
 //		driver.findElement(By.id("buttonSimple")).click();
 		
@@ -225,23 +157,12 @@ public class TesteCampoTreinamento {
 		//validar se alterou o conteúdo do botão
 		Assert.assertEquals("Obrigado!", botao.getAttribute("value"));
 		
-		driver.quit();
-		
 	}
 	
 	@Test
 	//@Ignore
 	public void deveInteragirComLinks() {
 		
-		//inicializa o driver geckodriver que está na pasta do path do windows
-		WebDriver driver = new FirefoxDriver();
-		
-		//ajuste da janela do navegador
-		driver.manage().window().setSize(new Dimension(800, 600));
-		
-		//inicializa a página e pega o título dela
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-
 		//busca o link por linktest, visto que não tem id no elemento
 		driver.findElement(By.linkText("Voltar")).click();	
 		
@@ -252,22 +173,11 @@ public class TesteCampoTreinamento {
 		//v2 seria o @ignore que está acima deste método
 //		Assert.fail();
 		
-		driver.quit();
-		
 	}
 	
 	@Test
 	public void deveBuscarTextosNaPagina() {
 		
-		//inicializa o driver geckodriver que está na pasta do path do windows
-		WebDriver driver = new FirefoxDriver();
-		
-		//ajuste da janela do navegador
-		driver.manage().window().setSize(new Dimension(800, 600));
-		
-		//inicializa a página e pega o título dela
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-	
 		//fazendo busca por toda a página no elemento body e pegar todo o texto
 //		driver.findElement(By.tagName("body")).getText();
 		
@@ -283,24 +193,6 @@ public class TesteCampoTreinamento {
 		//fazer busca por classename
 		Assert.assertEquals("Cuidado onde clica, muitas armadilhas...", driver.findElement(By.className("facilAchar")).getText());
 		
-		driver.quit();
 	}
 		
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
