@@ -13,6 +13,7 @@ import org.openqa.selenium.support.ui.Select;
 public class TesteCadastro {
 	
 	private WebDriver driver;
+	private DSL dsl;
 	
 	@Before
 	public void inicializa() {
@@ -24,6 +25,9 @@ public class TesteCadastro {
 		
 		//inicializa a página e pega o título dela
 		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
+		
+		//inicializa a DSL
+		dsl = new DSL(driver);
 	}
 	
 	@After
@@ -36,46 +40,34 @@ public class TesteCadastro {
 	public void TesteCadastro1() {
 	
 		//Preenche os campos Nome e Sobrenome
-		driver.findElement(By.id("elementosForm:nome")).sendKeys("Luan");
-		driver.findElement(By.id("elementosForm:sobrenome")).sendKeys("Alves Daniel");
+		dsl.escreve("elementosForm:nome", "Luan");
+		dsl.escreve("elementosForm:sobrenome", "Alves Daniel");
 		
 		//seleciona o sexo masculino no radiobutton
-		driver.findElement(By.id("elementosForm:sexo:0")).click();
+		dsl.clicarRadio("elementosForm:sexo:0");
 		
 		//escolhe a pizza no checkbox
-		driver.findElement(By.id("elementosForm:comidaFavorita:2")).click();
-		
+		dsl.clicarRadio("elementosForm:comidaFavorita:2");
+				
 		//escolhe Superior no combobox da escolaridade
-//		WebElement element1 = driver.findElement(By.id("elementosForm:escolaridade"));
-//		Select combo1 = new Select(element1);		
-//		combo1.selectByVisibleText("Superior");
-		
-		//ou
-		new Select(driver.findElement(By.id("elementosForm:escolaridade"))).selectByVisibleText("Superior");
-		
+		dsl.selecionarCombo("elementosForm:escolaridade", "Superior");
+				
 		//escolhe natacao no combobox de multiplas escolhas
-//		WebElement element2 = driver.findElement(By.id("elementosForm:esportes"));
-//		Select combo2 = new Select(element2);		
-//		combo2.selectByVisibleText("Natacao");		
-		
-		//ou
-		new Select(driver.findElement(By.id("elementosForm:esportes"))).selectByVisibleText("Natacao");
-		
-		
+		dsl.selecionarCombo("elementosForm:esportes","Natacao");
+				
 		//clicar em cadastrar
-		driver.findElement(By.id("elementosForm:cadastrar")).click();
-		
+		dsl.clicarBotao("elementosForm:cadastrar");
+				
 		//Pegar o texto que comece com Cadastrado, visto que não há id no elemento que queremos validar
-		Assert.assertTrue(driver.findElement(By.id("resultado")).getText().startsWith("Cadastrado!"));
-		
-		Assert.assertTrue(driver.findElement(By.id("descNome")).getText().endsWith("Luan"));
-		Assert.assertTrue(driver.findElement(By.id("descSobrenome")).getText().endsWith("Alves Daniel"));
-		Assert.assertTrue(driver.findElement(By.id("descSexo")).getText().endsWith("Masculino"));
-		Assert.assertTrue(driver.findElement(By.id("descComida")).getText().endsWith("Pizza"));
-		Assert.assertTrue(driver.findElement(By.id("descEscolaridade")).getText().endsWith("superior"));
+		Assert.assertTrue(dsl.obterTexto(By.id("resultado")).startsWith("Cadastrado!"));		
+		Assert.assertTrue(dsl.obterTexto(By.id("descNome")).endsWith("Luan"));
+		Assert.assertTrue(dsl.obterTexto(By.id("descSobrenome")).endsWith("Alves Daniel"));
+		Assert.assertTrue(dsl.obterTexto(By.id("descSexo")).endsWith("Masculino"));
+		Assert.assertTrue(dsl.obterTexto(By.id("descComida")).endsWith("Pizza"));
+		Assert.assertTrue(dsl.obterTexto(By.id("descEscolaridade")).endsWith("superior"));
 		//OU
-		Assert.assertEquals("Esportes: Natacao", 		driver.findElement(By.id("descEsportes")).getText());
-		Assert.assertEquals("Sugestoes:", 				driver.findElement(By.id("descSugestoes")).getText());
+		Assert.assertEquals("Esportes: Natacao", dsl.obterTexto(By.id("descEsportes")));
+		Assert.assertEquals("Sugestoes:", dsl.obterTexto(By.id("descSugestoes")));
 
 	}
 	
@@ -83,9 +75,10 @@ public class TesteCadastro {
 	public void validaNomeNaoPreenchido() {
 		
 		//clica no cadastrar
-		driver.findElement(By.id("elementosForm:cadastrar")).click();
-		//muda o foto para a tela de alert
-		Alert alert = driver.switchTo().alert();
+		dsl.clicarBotao("elementosForm:cadastrar");
+		
+		//muda o foco para a tela de alert
+		Alert alert = dsl.mudaFocoAlert();
 		//Pega o texto do alert
 		String texto = alert.getText();
 		//validar a mensagem da tela de alert
@@ -99,9 +92,9 @@ public class TesteCadastro {
 	public void validaSobrenomeNaoPreenchido() {
 		
 		//Informa o nome
-		driver.findElement(By.id("elementosForm:nome")).sendKeys("Luan");
-		driver.findElement(By.id("elementosForm:cadastrar")).click();
-		Alert alert = driver.switchTo().alert();
+		dsl.escreve("elementosForm:nome", "Luan");
+		dsl.clicarBotao("elementosForm:cadastrar");
+		Alert alert = dsl.mudaFocoAlert();
 		String texto = alert.getText();
 		Assert.assertEquals("Sobrenome eh obrigatorio", texto);
 		alert.accept();
@@ -111,10 +104,11 @@ public class TesteCadastro {
 	@Test
 	public void validaSexoNaoPreenchido() {
 		
-		driver.findElement(By.id("elementosForm:nome")).sendKeys("Luan");
-		driver.findElement(By.id("elementosForm:sobrenome")).sendKeys("Alves");
-		driver.findElement(By.id("elementosForm:cadastrar")).click();
-		Alert alert = driver.switchTo().alert();
+		dsl.escreve("elementosForm:nome", "Luan");
+		dsl.escreve("elementosForm:sobrenome", "Alves");
+		dsl.clicarBotao("elementosForm:cadastrar");
+		Alert alert = dsl.mudaFocoAlert();
+
 		String texto = alert.getText();
 		Assert.assertEquals("Sexo eh obrigatorio", texto);
 		alert.accept();
@@ -124,13 +118,13 @@ public class TesteCadastro {
 	@Test
 	public void validaComidaPreenchidaIncorretamente() {
 		
-		driver.findElement(By.id("elementosForm:nome")).sendKeys("Luan");
-		driver.findElement(By.id("elementosForm:sobrenome")).sendKeys("Alves");
-		driver.findElement(By.id("elementosForm:sexo:0")).click();
-		driver.findElement(By.id("elementosForm:comidaFavorita:0")).click();
-		driver.findElement(By.id("elementosForm:comidaFavorita:3")).click();
-		driver.findElement(By.id("elementosForm:cadastrar")).click();
-		Alert alert = driver.switchTo().alert();
+		dsl.escreve("elementosForm:nome", "Luan");
+		dsl.escreve("elementosForm:sobrenome", "Alves");
+		dsl.clicarRadio("elementosForm:sexo:0");
+		dsl.clicarRadio("elementosForm:comidaFavorita:0");
+		dsl.clicarRadio("elementosForm:comidaFavorita:3");
+		dsl.clicarBotao("elementosForm:cadastrar");;
+		Alert alert = dsl.mudaFocoAlert();
 		String texto = alert.getText();
 		Assert.assertEquals("Tem certeza que voce eh vegetariano?", texto);
 		alert.accept();
@@ -140,20 +134,15 @@ public class TesteCadastro {
 	@Test
 	public void validaEsportePreenchidoIncorretamente() {
 		
-		driver.findElement(By.id("elementosForm:nome")).sendKeys("Luan");
-		driver.findElement(By.id("elementosForm:sobrenome")).sendKeys("Alves");
-		driver.findElement(By.id("elementosForm:sexo:0")).click();
-		driver.findElement(By.id("elementosForm:comidaFavorita:0")).click();
+		dsl.escreve("elementosForm:nome", "Luan");
+		dsl.escreve("elementosForm:sobrenome", "Alves");
+		dsl.clicarRadio("elementosForm:sexo:0");
+		dsl.clicarRadio("elementosForm:comidaFavorita:0");
 		
-		//Instanciando como WebElement pois é como o selenium retorna em findElement
-		WebElement element = driver.findElement(By.id("elementosForm:esportes"));
-		//dando select passando o element criado
-		Select combo = new Select(element);
-		//selecionar mais de um item ao mesmo tempo
-		combo.selectByVisibleText("Corrida");
-		combo.selectByVisibleText("O que eh esporte?");
+		dsl.selecionarCombo("elementosForm:esportes", "Natacao");
+		dsl.selecionarCombo("elementosForm:esportes", "O que eh esporte?");
 		
-		driver.findElement(By.id("elementosForm:cadastrar")).click();
+		dsl.clicarBotao("elementosForm:cadastrar");;
 		Alert alert = driver.switchTo().alert();
 		String texto = alert.getText();
 		Assert.assertEquals("Voce faz esporte ou nao?", texto);
