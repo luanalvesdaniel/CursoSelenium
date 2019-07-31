@@ -64,7 +64,7 @@ public class TesteCampoTreinamento {
 		//encontrar elemento por id e dar um clique no radiobutton
 		dsl.clicarRadio("elementosForm:sexo:0");
 		//validar se o elemento está clicado
-		Assert.assertTrue(driver.findElement(By.id("elementosForm:sexo:0")).isSelected());
+		Assert.assertTrue(dsl.isRadioMarcado("elementosForm:sexo:0"));
 		
 	}
 	

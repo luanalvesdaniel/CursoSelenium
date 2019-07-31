@@ -11,6 +11,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class TesteFrames {
 
 	private WebDriver driver;
+	private DSL dsl;
 	
 	@Before
 	public void inicializa() {
@@ -22,6 +23,9 @@ public class TesteFrames {
 		
 		//inicializa a página e pega o título dela
 		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
+		
+		//inicializa a DSL
+		dsl = new DSL(driver);
 	}
 	
 	@After
@@ -37,10 +41,10 @@ public class TesteFrames {
 		driver.switchTo().frame("frame1");
 		
 		//clica no botao
-		driver.findElement(By.id("frameButton")).click();
-		
+		dsl.clicarBotao("frameButton");
+				
 		//mudar o foco para o alert
-		Alert alert = driver.switchTo().alert();
+		Alert alert = dsl.mudaFocoAlert();
 		
 		//atribuir a mensagem numa variável
 		String msg = alert.getText();
@@ -53,7 +57,7 @@ public class TesteFrames {
 		driver.switchTo().defaultContent();
 		
 		//pegar o texto e inserir no nome
-		driver.findElement(By.id("elementosForm:nome")).sendKeys(msg);
-		
+		dsl.escreve("elementosForm:nome", msg);
+				
 	}
 }

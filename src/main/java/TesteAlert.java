@@ -11,6 +11,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class TesteAlert {
 
 	private WebDriver driver;
+	private DSL dsl;
 	
 	@Before
 	public void inicializa() {
@@ -22,6 +23,10 @@ public class TesteAlert {
 		
 		//inicializa a página e pega o título dela
 		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
+		
+		//inicializa a DSL
+		dsl = new DSL(driver);
+	
 	}
 	
 	@After
@@ -34,11 +39,11 @@ public class TesteAlert {
 	public void deveInteragirComAlertSimples() {
 	
 		//encontrar o botão que executa um alert simples
-		driver.findElement(By.id("alert")).click();
-		
+		dsl.clicarBotao("alert");
+				
 		//pedir ao selenium alterar o foco ao alerta, pois a tela de alert está fora da página
 		//como retorna um alert, capturaremos essa variável
-		Alert alert = driver.switchTo().alert();
+		Alert alert = dsl.mudaFocoAlert();
 		
 		//atribuir o texto do alert à uma variável
 		String texto = alert.getText();
@@ -50,18 +55,18 @@ public class TesteAlert {
 		alert.accept();
 		
 		//pegar o texto do alert e inserir o mesmo texto no campo Nome
-		driver.findElement(By.id("elementosForm:nome")).sendKeys(texto);
-		
+		dsl.escreve("elementosForm:nome", texto);
+				
 	}
 	
 	@Test	
 	public void deveInteragirComAlertConfirm() {
 		
 		//realizar o clique no botão confirm
-		driver.findElement(By.id("confirm")).click();
-		
+		dsl.clicarBotao("confirm");
+				
 		//mudar o foco para a tela de confirm
-		Alert alerta = driver.switchTo().alert();
+		Alert alerta = dsl.mudaFocoAlert();
 		
 		//aceitar a tela de confirm
 		alerta.accept();
@@ -76,8 +81,8 @@ public class TesteAlert {
 		
 		//teste com o cancelar do confirm
 		//realizar o clique no botão confirm
-		driver.findElement(By.id("confirm")).click();
-		
+		dsl.clicarBotao("confirm");
+				
 		//cancelar o confirm
 		alerta.dismiss();
 		
@@ -94,10 +99,10 @@ public class TesteAlert {
 	public void deveInteragirComAlertPrompt() {
 	
 		//clicar no alert
-		driver.findElement(By.id("prompt")).click();
-	
+		dsl.clicarBotao("prompt");
+			
 		//mudar o foco para o alert
-		Alert alertp = driver.switchTo().alert();
+		Alert alertp = dsl.mudaFocoAlert();
 		
 		//validar se aparece o texto em tela
 		Assert.assertEquals("Digite um numero", alertp.getText());

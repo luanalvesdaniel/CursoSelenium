@@ -11,6 +11,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class TesteFramesEJanelas {
 
 	private WebDriver driver;
+	private DSL dsl;
 	
 	@Before
 	public void inicializa() {
@@ -22,6 +23,9 @@ public class TesteFramesEJanelas {
 		
 		//inicializa a página e pega o título dela
 		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
+		
+		//inicializa a DSL
+		dsl = new DSL(driver);
 	}
 	
 	@After
@@ -37,10 +41,10 @@ public class TesteFramesEJanelas {
 		driver.switchTo().frame("frame1");
 		
 		//clica no botao
-		driver.findElement(By.id("frameButton")).click();
-		
+		dsl.clicarBotao("frameButton");
+				
 		//mudar o foco para o alert
-		Alert alert = driver.switchTo().alert();
+		Alert alert = dsl.mudaFocoAlert();
 		
 		//atribuir a mensagem numa variável
 		String msg = alert.getText();
@@ -53,8 +57,8 @@ public class TesteFramesEJanelas {
 		driver.switchTo().defaultContent();
 		
 		//pegar o texto e inserir no nome
-		driver.findElement(By.id("elementosForm:nome")).sendKeys(msg);
-		
+		dsl.escreve("elementosForm:nome", msg);
+				
 	}
 	
 	@Test
@@ -82,14 +86,8 @@ public class TesteFramesEJanelas {
 	@Test
 	public void deveInteragirComJanelasSemTitulo() {
 		
-		driver.findElement(By.id("buttonPopUpHard")).click();
-		
-		//pegando o "id" das janelas para conseguir focar nelas
-		//a principal
-//		System.out.println(driver.getWindowHandle()); 
-		//a principal mais a popup
-//		System.out.println(driver.getWindowHandles());
-		
+		dsl.clicarBotao("buttonPopUpHard");
+			
 		//pegar o id de forma dinâmica visto que o valor muda a toda execução e focar na popup
 		//o String dentro do Window() é devido ao método window esperar uma string
 		driver.switchTo().window((String) driver.getWindowHandles().toArray()[1]);
