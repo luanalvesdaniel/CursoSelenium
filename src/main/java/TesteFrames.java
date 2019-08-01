@@ -8,6 +8,12 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+/**
+ * Interagir e validar os frames da página
+ * @author Luan Alves Daniel
+ *	
+ */	
+
 public class TesteFrames {
 
 	private WebDriver driver;
@@ -38,21 +44,17 @@ public class TesteFrames {
 	public void deveInteragirComFrames() {
 		
 		//mudar o foco para o iframe
-		driver.switchTo().frame("frame1");
+		dsl.entrarFrame("frame1");
 		
 		//clica no botao
 		dsl.clicarBotao("frameButton");
-				
-		//mudar o foco para o alert
-		Alert alert = dsl.mudaFocoAlert();
-		
+
 		//atribuir a mensagem numa variável
-		String msg = alert.getText();
+		String msg = dsl.alertaObterTextoEAceita();
 		
 		//comparar o texto do alert
 		Assert.assertEquals("Frame OK!", msg);
-		alert.accept();
-		
+
 		//voltar ao foco da tela principal
 		driver.switchTo().defaultContent();
 		

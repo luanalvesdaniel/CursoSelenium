@@ -6,6 +6,12 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+/**
+ * Teste simples para pegar o título da página www.google.com
+ * @author Luan Alves Daniel
+ *	
+ */
+
 public class TesteGoogle {
 	
 	private WebDriver driver;

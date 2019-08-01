@@ -2,11 +2,16 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+
+/**
+ * Interagir e validar os frames e janelas da página
+ * @author Luan Alves Daniel
+ *	
+ */
 
 public class TesteFramesEJanelas {
 
@@ -38,48 +43,43 @@ public class TesteFramesEJanelas {
 	public void deveInteragirComFrames() {
 		
 		//mudar o foco para o iframe
-		driver.switchTo().frame("frame1");
+		dsl.entrarFrame("frame1");
 		
 		//clica no botao
 		dsl.clicarBotao("frameButton");
-				
-		//mudar o foco para o alert
-		Alert alert = dsl.mudaFocoAlert();
-		
+
 		//atribuir a mensagem numa variável
-		String msg = alert.getText();
+		String msg = dsl.alertaObterTextoEAceita();
 		
 		//comparar o texto do alert
 		Assert.assertEquals("Frame OK!", msg);
-		alert.accept();
 		
 		//voltar ao foco da tela principal
-		driver.switchTo().defaultContent();
+		dsl.sairFrame();
 		
 		//pegar o texto e inserir no nome
-		dsl.escreve("elementosForm:nome", msg);
-				
+		dsl.escreve("elementosForm:nome", msg);				
 	}
 	
 	@Test
 	public void deveInteragirComJanelas() {
 		
-		driver.findElement(By.id("buttonPopUpEasy")).click();
+		dsl.clicarBotao("buttonPopUpEasy");
 		
-		//mudar o foco para a popup
-		driver.switchTo().window("Popup");
+		//mudar o foco para a janela popup
+		dsl.trocarJanela("Popup");
 		
 		//escrever no campo
-		driver.findElement(By.tagName("textarea")).sendKeys("Deu certo?");
+		dsl.escreve(By.tagName("textarea"),("Deu certo?"));
 		
 		//fechar a popup
 		driver.close();
 		
 		//voltar o foco a tela principal (anterior)
-		driver.switchTo().window("");
+		dsl.trocarJanela("");
 		
 		//prencher no campo de textarea
-		driver.findElement(By.tagName("textarea")).sendKeys("e agora?");
+		dsl.escreve(By.tagName("textarea"), "e agora?");
 
 	}
 	
@@ -90,16 +90,16 @@ public class TesteFramesEJanelas {
 			
 		//pegar o id de forma dinâmica visto que o valor muda a toda execução e focar na popup
 		//o String dentro do Window() é devido ao método window esperar uma string
-		driver.switchTo().window((String) driver.getWindowHandles().toArray()[1]);
+		dsl.trocarJanela((String) driver.getWindowHandles().toArray()[1]);
 		
 		//escrever no textarea da popup
-		driver.findElement(By.tagName("textarea")).sendKeys("Deu Certo?");
+		dsl.escreve(By.tagName("textarea"), "Deu certo?");
 		
 		//voltar o foco para a tela principal
-		driver.switchTo().window((String) driver.getWindowHandles().toArray()[0]);
+		dsl.trocarJanela((String) driver.getWindowHandles().toArray()[0]);
 		
 		//escrever no textarea da tela principal
-		driver.findElement(By.tagName("textarea")).sendKeys("E agora?");
+		dsl.escreve(By.tagName("textarea"), "e agora?");
 		
 	}
 }

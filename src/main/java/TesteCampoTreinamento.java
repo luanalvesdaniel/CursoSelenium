@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
@@ -7,9 +8,13 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.Select;
+
+/**
+ * Interagir e validar os elementos da página
+ * @author Luan Alves Daniel
+ *	
+ */
 
 public class TesteCampoTreinamento {
 
@@ -38,8 +43,7 @@ public class TesteCampoTreinamento {
 	}
 	
 	@Test
-	public void deveInteragirComTextField() {
-		
+	public void deveInteragirComTextField() {		
 		//encontrar elemento do tipo textfield pelo id e inserir o texto (sendkeys)
 		dsl.escreve("elementosForm:nome", "teste de escrita");
 		
@@ -49,8 +53,16 @@ public class TesteCampoTreinamento {
 	}
 	
 	@Test
-	public void deveInteragirComTextArea() {
-		
+	public void testTextFieldDuplo(){
+		//escrever e validar alteração no mesmo
+		dsl.escreve("elementosForm:nome", "Luan");
+		Assert.assertEquals("Luan", dsl.obterValorCampo("elementosForm:nome"));
+		dsl.escreve("elementosForm:nome", "Alves");
+		Assert.assertEquals("Alves", dsl.obterValorCampo("elementosForm:nome"));
+	}
+	
+	@Test
+	public void deveInteragirComTextArea() {		
 		//busca elemento pelo id e insere teste, em seguida valida o texto
 		//para pular linha basta usar o \n
 		dsl.escreve("elementosForm:sugestoes", "teste");
@@ -59,8 +71,7 @@ public class TesteCampoTreinamento {
 	}
 	
 	@Test
-	public void deveInteragirComRadioButton() {
-		
+	public void deveInteragirComRadioButton() {		
 		//encontrar elemento por id e dar um clique no radiobutton
 		dsl.clicarRadio("elementosForm:sexo:0");
 		//validar se o elemento está clicado
@@ -69,18 +80,16 @@ public class TesteCampoTreinamento {
 	}
 	
 	@Test
-	public void deveInteragirComCheckBox() {
-		
+	public void deveInteragirComCheckBox() {		
 		//encontrar elemento por id e dar um check
 		dsl.clicarRadio("elementosForm:comidaFavorita:0");
 		//validar se o elemento está com check
-		Assert.assertTrue(dsl.isRadioMarcado(("elementosForm:comidaFavorita:0")));
+		Assert.assertTrue(dsl.isCheckMarcado(("elementosForm:comidaFavorita:0")));
 		
 	}
 	
 	@Test
-	public void deveInteragirComCombo() {
-		
+	public void deveInteragirComCombo() {		
 		//selecionando o valor pelo texto visível
 		dsl.selecionarCombo("elementosForm:escolaridade", "1o grau completo");
 		
@@ -90,75 +99,44 @@ public class TesteCampoTreinamento {
 	}
 	
 	@Test
-	public void deveVerificarValoresCombo() {
-		
-		//Instanciando como WebElement pois é como o selenium retorna em findElement
-		WebElement element = driver.findElement(By.id("elementosForm:escolaridade"));
-		//dando select passando o element criado
-		Select combo = new Select(element);
-		
-		//Pegar todos as opções do combo, onde o getoptions retorna uma lista de elements
-		List<WebElement> options = combo.getOptions();
-		
+	public void deveVerificarValoresCombo() {		
 		//validar se possui exatamente a quantidade esperada
-		Assert.assertEquals(8, options.size());
-		
-		//validar se algum opção está disponível no combo
-		boolean encontrou = false;
-		for(WebElement option: options) {
-			if(option.getText().equals("Mestrado")) {
-				encontrou = true;
-				break;
-			}			
-		}
-		Assert.assertTrue(encontrou);
-		
+		Assert.assertEquals(8, dsl.obterQuantidadeOpcoesCombo("elementosForm:escolaridade"));
+		Assert.assertTrue(dsl.verificarOpcaoCombo("elementosForm:escolaridade", "Mestrado"));			
 	}
 	
 	@Test
-	public void deveVerificarValoresComboMultiplo() {
-		
-		//Instanciando como WebElement pois é como o selenium retorna em findElement
-		WebElement element = driver.findElement(By.id("elementosForm:esportes"));
-		//dando select passando o element criado
-		Select combo = new Select(element);
-		
+	public void deveVerificarValoresComboMultiplo() {		
 		//selecionar mais de um item ao mesmo tempo
 		dsl.selecionarCombo("elementosForm:esportes", "Natacao");
 		dsl.selecionarCombo("elementosForm:esportes", "Corrida");
 		dsl.selecionarCombo("elementosForm:esportes", "O que eh esporte?");
 				
 		//validar se a quantidade selecionada corresponde a 3 (três)
-		List<WebElement> allSelectedOptions = combo.getAllSelectedOptions();
-		Assert.assertEquals(3, allSelectedOptions.size());
+		List<String> opcoesMarcadas = dsl.obterValoresCombo("elementosForm:esportes");
+		Assert.assertEquals(3, opcoesMarcadas.size());
 				
 		//para desmarcar alguma opção
-		combo.deselectByVisibleText("Corrida");		
+		dsl.deselecionarCombo("elementosForm:esportes", "Corrida");
 				
-		//validar se a quantidade selecionada corresponde a 2 (três)
-		allSelectedOptions = combo.getAllSelectedOptions();
-		Assert.assertEquals(2, allSelectedOptions.size());
-		
+		//validar se a quantidade selecionada corresponde a 2 (dois) e validar
+		opcoesMarcadas = dsl.obterValoresCombo("elementosForm:esportes");
+		Assert.assertEquals(2, opcoesMarcadas.size());
+		Assert.assertTrue(opcoesMarcadas.containsAll(Arrays.asList("Natacao", "O que eh esporte?")));		
 	}
 	
 	@Test
-	public void deveInteragirComBotoes() {
-		
+	public void deveInteragirComBotoes() {		
 		//Clicar no botao pelo id
 		dsl.clicarBotao("buttonSimple");
 		
-		//clicar no botao pelo id v2
-		WebElement botao = driver.findElement(By.id("buttonSimple"));
-		botao.click();
-		
 		//validar se alterou o conteúdo do botão
-		Assert.assertEquals("Obrigado!", botao.getAttribute("value"));
+		Assert.assertEquals("Obrigado!", dsl.obterValueElemento("buttonSimple"));
 		
 	}
 	
 	@Test
-	public void deveInteragirComLinks() {
-		
+	public void deveInteragirComLinks() {		
 		//busca o link por linktest, visto que não tem id no elemento
 		dsl.clicarLink("Voltar");	
 		
@@ -168,9 +146,7 @@ public class TesteCampoTreinamento {
 	}
 	
 	@Test
-	public void deveBuscarTextosNaPagina() {
-		
-	
+	public void deveBuscarTextosNaPagina() {	
 		//fazer busca por h3
 		Assert.assertEquals("Campo de Treinamento", dsl.obterTexto(By.tagName("h3")));
 		
@@ -178,8 +154,8 @@ public class TesteCampoTreinamento {
 //		Assert.assertEquals("Cuidado onde clica, muitas amardilhas...", driver.findElement(By.tagName("span")).getText());
 		
 		//fazer busca por classename
-		Assert.assertEquals("Cuidado onde clica, muitas armadilhas...", dsl.obterTexto(By.className("facilAchar")));
-		
+		Assert.assertEquals("Cuidado onde clica, muitas armadilhas...", 
+				dsl.obterTexto(By.className("facilAchar")));		
 	}
 		
 }

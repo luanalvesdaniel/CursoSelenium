@@ -2,16 +2,18 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.Select;
 
-public class TesteCadastro {
-	
+/**
+ * Realiza o cadastro e valida as regras de negócio do mesmo
+ * @author Luan Alves Daniel
+ *	
+ */
+
+
+public class TesteCadastro {	
 	private WebDriver driver;
 	private DSL dsl;
 	
@@ -37,8 +39,7 @@ public class TesteCadastro {
 	}
 	
 	@Test
-	public void TesteCadastro1() {
-	
+	public void TesteCadastro1() {	
 		//Preenche os campos Nome e Sobrenome
 		dsl.escreve("elementosForm:nome", "Luan");
 		dsl.escreve("elementosForm:sobrenome", "Alves Daniel");
@@ -59,76 +60,50 @@ public class TesteCadastro {
 		dsl.clicarBotao("elementosForm:cadastrar");
 				
 		//Pegar o texto que comece com Cadastrado, visto que não há id no elemento que queremos validar
-		Assert.assertTrue(dsl.obterTexto(By.id("resultado")).startsWith("Cadastrado!"));		
-		Assert.assertTrue(dsl.obterTexto(By.id("descNome")).endsWith("Luan"));
-		Assert.assertTrue(dsl.obterTexto(By.id("descSobrenome")).endsWith("Alves Daniel"));
-		Assert.assertTrue(dsl.obterTexto(By.id("descSexo")).endsWith("Masculino"));
-		Assert.assertTrue(dsl.obterTexto(By.id("descComida")).endsWith("Pizza"));
-		Assert.assertTrue(dsl.obterTexto(By.id("descEscolaridade")).endsWith("superior"));
+		Assert.assertTrue(dsl.obterTexto("resultado").startsWith("Cadastrado!"));		
+		Assert.assertTrue(dsl.obterTexto("descNome").endsWith("Luan"));
+		Assert.assertTrue(dsl.obterTexto("descSobrenome").endsWith("Alves Daniel"));
+		Assert.assertTrue(dsl.obterTexto("descSexo").endsWith("Masculino"));
+		Assert.assertTrue(dsl.obterTexto("descComida").endsWith("Pizza"));
+		Assert.assertTrue(dsl.obterTexto("descEscolaridade").endsWith("superior"));
 		//OU
-		Assert.assertEquals("Esportes: Natacao", dsl.obterTexto(By.id("descEsportes")));
-		Assert.assertEquals("Sugestoes:", dsl.obterTexto(By.id("descSugestoes")));
-
+		Assert.assertEquals("Esportes: Natacao", dsl.obterTexto("descEsportes"));
 	}
 	
 	@Test
-	public void validaNomeNaoPreenchido() {
-		
+	public void validaNomeNaoPreenchido() {		
 		//clica no cadastrar
 		dsl.clicarBotao("elementosForm:cadastrar");
-		
-		//muda o foco para a tela de alert
-		Alert alert = dsl.mudaFocoAlert();
-		//Pega o texto do alert
-		String texto = alert.getText();
+
 		//validar a mensagem da tela de alert
-		Assert.assertEquals("Nome eh obrigatorio", texto);
-		//dar ok no alert
-		alert.accept();
-		
+		Assert.assertEquals("Nome eh obrigatorio", dsl.alertaObterTextoEAceita());
 	}
 
 	@Test
-	public void validaSobrenomeNaoPreenchido() {
-		
+	public void validaSobrenomeNaoPreenchido() {		
 		//Informa o nome
 		dsl.escreve("elementosForm:nome", "Luan");
 		dsl.clicarBotao("elementosForm:cadastrar");
-		Alert alert = dsl.mudaFocoAlert();
-		String texto = alert.getText();
-		Assert.assertEquals("Sobrenome eh obrigatorio", texto);
-		alert.accept();
-		
+		Assert.assertEquals("Sobrenome eh obrigatorio", dsl.alertaObterTextoEAceita());
 	}
 
 	@Test
 	public void validaSexoNaoPreenchido() {
-		
 		dsl.escreve("elementosForm:nome", "Luan");
 		dsl.escreve("elementosForm:sobrenome", "Alves");
 		dsl.clicarBotao("elementosForm:cadastrar");
-		Alert alert = dsl.mudaFocoAlert();
-
-		String texto = alert.getText();
-		Assert.assertEquals("Sexo eh obrigatorio", texto);
-		alert.accept();
-		
+		Assert.assertEquals("Sexo eh obrigatorio", dsl.alertaObterTextoEAceita());
 	}
 
 	@Test
 	public void validaComidaPreenchidaIncorretamente() {
-		
 		dsl.escreve("elementosForm:nome", "Luan");
 		dsl.escreve("elementosForm:sobrenome", "Alves");
 		dsl.clicarRadio("elementosForm:sexo:0");
 		dsl.clicarRadio("elementosForm:comidaFavorita:0");
 		dsl.clicarRadio("elementosForm:comidaFavorita:3");
 		dsl.clicarBotao("elementosForm:cadastrar");;
-		Alert alert = dsl.mudaFocoAlert();
-		String texto = alert.getText();
-		Assert.assertEquals("Tem certeza que voce eh vegetariano?", texto);
-		alert.accept();
-		
+		Assert.assertEquals("Tem certeza que voce eh vegetariano?", dsl.alertaObterTextoEAceita());
 	}
 
 	@Test
@@ -137,16 +112,11 @@ public class TesteCadastro {
 		dsl.escreve("elementosForm:nome", "Luan");
 		dsl.escreve("elementosForm:sobrenome", "Alves");
 		dsl.clicarRadio("elementosForm:sexo:0");
-		dsl.clicarRadio("elementosForm:comidaFavorita:0");
-		
+		dsl.clicarRadio("elementosForm:comidaFavorita:0");		
 		dsl.selecionarCombo("elementosForm:esportes", "Natacao");
 		dsl.selecionarCombo("elementosForm:esportes", "O que eh esporte?");
 		
-		dsl.clicarBotao("elementosForm:cadastrar");;
-		Alert alert = driver.switchTo().alert();
-		String texto = alert.getText();
-		Assert.assertEquals("Voce faz esporte ou nao?", texto);
-		alert.accept();
-		
+		dsl.clicarBotao("elementosForm:cadastrar");
+		Assert.assertEquals("Voce faz esporte ou nao?", dsl.alertaObterTextoEAceita());		
 	}
 }
