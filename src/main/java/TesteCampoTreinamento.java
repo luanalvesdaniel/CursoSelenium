@@ -20,6 +20,7 @@ public class TesteCampoTreinamento {
 
 	private WebDriver driver;
 	private DSL dsl;
+	private CampoTreinamentoPage page;
 	
 	@Before
 	public void inicializa() {
@@ -35,6 +36,8 @@ public class TesteCampoTreinamento {
 		//inicializa a DSL
 		dsl = new DSL(driver);
 		
+		//Instanciando a page
+		page = new CampoTreinamentoPage(driver);
 	}
 	
 	@After
@@ -45,56 +48,56 @@ public class TesteCampoTreinamento {
 	@Test
 	public void deveInteragirComTextField() {		
 		//encontrar elemento do tipo textfield pelo id e inserir o texto (sendkeys)
-		dsl.escreve("elementosForm:nome", "teste de escrita");
-		
+		page.setNome("Luan");
+				
 		//no mesmo elemento acima, validar o que foi escrito
-		Assert.assertEquals("teste de escrita", dsl.obterValorCampo("elementosForm:nome"));
+		Assert.assertEquals("Luan", page.getNome());
 		
 	}
 	
 	@Test
 	public void testTextFieldDuplo(){
 		//escrever e validar alteração no mesmo
-		dsl.escreve("elementosForm:nome", "Luan");
-		Assert.assertEquals("Luan", dsl.obterValorCampo("elementosForm:nome"));
-		dsl.escreve("elementosForm:nome", "Alves");
-		Assert.assertEquals("Alves", dsl.obterValorCampo("elementosForm:nome"));
+		page.setNome("Luan");
+		Assert.assertEquals("Luan", page.getNome());
+		page.setNome("Alves");
+		Assert.assertEquals("Alves", page.getNome());
 	}
 	
 	@Test
 	public void deveInteragirComTextArea() {		
 		//busca elemento pelo id e insere teste, em seguida valida o texto
 		//para pular linha basta usar o \n
-		dsl.escreve("elementosForm:sugestoes", "teste");
-		Assert.assertEquals("teste", dsl.obterValorCampo("elementosForm:sugestoes"));
+		page.setSugestao("teste");
+		Assert.assertEquals("teste", page.getSugestao());
 	
 	}
 	
 	@Test
 	public void deveInteragirComRadioButton() {		
 		//encontrar elemento por id e dar um clique no radiobutton
-		dsl.clicarRadio("elementosForm:sexo:0");
+		page.setSexoMasculino();
 		//validar se o elemento está clicado
-		Assert.assertTrue(dsl.isRadioMarcado("elementosForm:sexo:0"));
-		
+		Assert.assertTrue(page.getSexoMasculino());
+
 	}
 	
 	@Test
 	public void deveInteragirComCheckBox() {		
 		//encontrar elemento por id e dar um check
-		dsl.clicarRadio("elementosForm:comidaFavorita:0");
+		page.setComidaCarne();
 		//validar se o elemento está com check
-		Assert.assertTrue(dsl.isCheckMarcado(("elementosForm:comidaFavorita:0")));
+		Assert.assertTrue(page.getComidaCarne());
 		
 	}
 	
 	@Test
 	public void deveInteragirComCombo() {		
 		//selecionando o valor pelo texto visível
-		dsl.selecionarCombo("elementosForm:escolaridade", "1o grau completo");
+		page.setEscolaridade("Mestrado");
 		
 		//Para validar devera primeiro pegar o primeiro valor selecionado e pegar o texto
-		Assert.assertEquals("1o grau completo", dsl.obterValorCombo("elementosForm:escolaridade"));
+		Assert.assertEquals("Mestrado", page.getEscolaridade("elementosForm:escolaridade"));
 		
 	}
 	
@@ -108,16 +111,14 @@ public class TesteCampoTreinamento {
 	@Test
 	public void deveVerificarValoresComboMultiplo() {		
 		//selecionar mais de um item ao mesmo tempo
-		dsl.selecionarCombo("elementosForm:esportes", "Natacao");
-		dsl.selecionarCombo("elementosForm:esportes", "Corrida");
-		dsl.selecionarCombo("elementosForm:esportes", "O que eh esporte?");
+		page.setEsporte("Natacao","Corrida","O que eh esporte?");
 				
 		//validar se a quantidade selecionada corresponde a 3 (três)
 		List<String> opcoesMarcadas = dsl.obterValoresCombo("elementosForm:esportes");
 		Assert.assertEquals(3, opcoesMarcadas.size());
 				
 		//para desmarcar alguma opção
-		dsl.deselecionarCombo("elementosForm:esportes", "Corrida");
+		page.unSetEsporte("Corrida");
 				
 		//validar se a quantidade selecionada corresponde a 2 (dois) e validar
 		opcoesMarcadas = dsl.obterValoresCombo("elementosForm:esportes");
@@ -128,7 +129,7 @@ public class TesteCampoTreinamento {
 	@Test
 	public void deveInteragirComBotoes() {		
 		//Clicar no botao pelo id
-		dsl.clicarBotao("buttonSimple");
+		page.cliqueMe();
 		
 		//validar se alterou o conteúdo do botão
 		Assert.assertEquals("Obrigado!", dsl.obterValueElemento("buttonSimple"));
@@ -138,10 +139,10 @@ public class TesteCampoTreinamento {
 	@Test
 	public void deveInteragirComLinks() {		
 		//busca o link por linktest, visto que não tem id no elemento
-		dsl.clicarLink("Voltar");	
+		page.cliqueVoltar();
 		
 		//procurar na página se acha o texto "voltou" após clicar no link voltar
-		Assert.assertEquals("Voltou!", dsl.obterTexto("resultado"));
+		Assert.assertEquals("Voltou!", page.obterResultadoVoltar());
 		
 	}
 	
