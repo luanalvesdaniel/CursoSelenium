@@ -15,7 +15,6 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class TesteCadastro {	
 	private WebDriver driver;
-	private DSL dsl;
 	private CampoTreinamentoPage page;
 	
 	@Before
@@ -28,9 +27,6 @@ public class TesteCadastro {
 		
 		//inicializa a página e pega o título dela
 		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-		
-		//inicializa a DSL
-		dsl = new DSL(driver);
 		
 		//Instanciando a page
 		page = new CampoTreinamentoPage(driver);
@@ -74,50 +70,4 @@ public class TesteCadastro {
 		Assert.assertEquals("Esportes: Natacao", page.obterEsporteCadastro());
 	}
 	
-	@Test
-	public void validaNomeNaoPreenchido() {		
-		//clica no cadastrar
-		page.cadastrar();
-
-		//validar a mensagem da tela de alert
-		Assert.assertEquals("Nome eh obrigatorio", dsl.alertaObterTextoEAceita());
-	}
-
-	@Test
-	public void validaSobrenomeNaoPreenchido() {		
-		//Informa o nome
-		page.setNome("Luan");
-		page.cadastrar();
-		Assert.assertEquals("Sobrenome eh obrigatorio", dsl.alertaObterTextoEAceita());
-	}
-
-	@Test
-	public void validaSexoNaoPreenchido() {
-		page.setNome("Luan");
-		page.setSobrenome("Alves");
-		page.cadastrar();
-		Assert.assertEquals("Sexo eh obrigatorio", dsl.alertaObterTextoEAceita());
-	}
-
-	@Test
-	public void validaComidaPreenchidaIncorretamente() {
-		page.setNome("Luan");
-		page.setSobrenome("Alves");
-		page.setSexoMasculino();
-		page.setComidaCarne();
-		page.setComidaVegetariano();
-		page.cadastrar();
-		Assert.assertEquals("Tem certeza que voce eh vegetariano?", dsl.alertaObterTextoEAceita());
-	}
-
-	@Test
-	public void validaEsportePreenchidoIncorretamente() {		
-		page.setNome("Luan");
-		page.setSobrenome("Alves");
-		page.setSexoMasculino();
-		page.setComidaCarne();
-		page.setEsporte("Natacao","O que eh esporte?");
-		page.cadastrar();
-		Assert.assertEquals("Voce faz esporte ou nao?", dsl.alertaObterTextoEAceita());		
-	}
 }
