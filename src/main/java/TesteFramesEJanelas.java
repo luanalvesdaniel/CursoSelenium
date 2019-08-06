@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 /**
@@ -59,6 +60,20 @@ public class TesteFramesEJanelas {
 		
 		//pegar o texto e inserir no nome
 		dsl.escreve("elementosForm:nome", msg);				
+	}
+	
+	@Test
+	public void deveInteragirComFrameEscondido() {
+		//buscar o elemento dentro do iframe para usar o JS
+		WebElement frame = driver.findElement(By.id("frame2"));
+		//usar o scrollby passando a posição exata do elemento como parâmetro ao JS
+		dsl.executarJS("window.scrollBy(0, arguments[0])", frame.getLocation().y);
+		
+		dsl.entrarFrame("frame2");
+		dsl.clicarBotao("frameButton");
+		String msg = dsl.alertaObterTextoEAceita();
+		Assert.assertEquals("Frame OK!", msg);
+		
 	}
 	
 	@Test

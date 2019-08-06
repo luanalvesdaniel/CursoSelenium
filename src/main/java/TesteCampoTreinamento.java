@@ -7,7 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 /**
@@ -158,5 +160,26 @@ public class TesteCampoTreinamento {
 		Assert.assertEquals("Cuidado onde clica, muitas armadilhas...", 
 				dsl.obterTexto(By.className("facilAchar")));		
 	}
+	
+	//Testando usando a classe JavaScript do Selenium
+	@Test
+	public void testJavaScript() {
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+//		js.executeScript("alert('Testando js via selenium')");
+		
+		//Achando o campo nome pelo id e passando um valor via JS
+		js.executeScript("document.getElementById('elementosForm:nome').value = 'Luan via js'");
+		
+		//achando o campo e mudando o tipo para radiobutton
+		js.executeScript("document.getElementById('elementosForm:sobrenome').type = 'radio'"); 
+		
+		//iniciando um elemento com o id do campo Nome
+		
+		WebElement element = driver.findElement(By.id("elementosForm:nome"));
+		//interagir com o element via JS utilizando a variável arguments
+		js.executeScript("arguments[0].style.border = arguments[1]", element, "solid 4px red");
+		
+	}
+	
 		
 }
